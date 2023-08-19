@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chart Example</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    canvas {
+      max-width: 800px;
+      margin: 20px auto;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="chart"></canvas>
+
+  <script>
+    // Replace this URL with the one where your Express server is running
+    const apiURL = 'http://localhost:3000/orders';
+
+    fetch(apiURL)
+      .then(response => response.json())
+      .then(data => {
+        const labels = Object.keys(data);
+        const datasets = Object.entries(data).map(([vendorName, itemCounts]) => ({
+          label: vendorName,
+          data: Object.values(itemCounts),
+        }));
+
+        const ctx = document.getElementById('chart').getContext('2d');
+        new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels,
+            datasets,
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true,
+                precision: 0,
+              },
+            },
+          },
+        });
+      })
+      .catch(error => console.error(error));
+  </script>
+</body>
+</html>
